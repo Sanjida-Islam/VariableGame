@@ -12,6 +12,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.security.Key;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Locale;
@@ -21,6 +22,12 @@ public class Quiz extends AppCompatActivity {
     ProgressBar progressBar;
 
     private static final long COUNTDOWN_IN_MILLIS = 4000;
+
+
+    // private static final String KEY_PROGRESS = "keyProgress";
+    private static final String KEY_MILLIS_LEFT = "keyMillisLeft";
+    private static final String KEY_ANSWERED = "keyAnswered";
+    private static final String KEY_QUESTION_LIST = "keyQuestionList";
 
     private CountDownTimer countDownTimer;
     private long timeLeftInMillis;
@@ -34,6 +41,7 @@ public class Quiz extends AppCompatActivity {
     private int questionCountTotal;
     private Question CurrentQuestion;
     private boolean answered;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,23 +62,36 @@ public class Quiz extends AppCompatActivity {
         textColorDefault = option3.getTextColors();
         textColorDefault = option4.getTextColors();
 
+
         QuizDbHelper dbHelper = new QuizDbHelper(this);
         questionList = dbHelper.getAllQuestion();
         questionCountTotal = questionList.size();
         Collections.shuffle(questionList);
 
-        showNextQuestion();
+        clickunable();
+
+        Runnable r = new Runnable() {
+            @Override
+            public void run() {
+
+                showNextQuestion();
+            }
+
+        };
+        Handler h = new Handler();
+        h.postDelayed(r, 2500);
     }
 
 
-    private void showNextQuestion(){
+    private void showNextQuestion() {
+        clickable();
 
         option1.setTextColor(textColorDefault);
         option2.setTextColor(textColorDefault);
         option3.setTextColor(textColorDefault);
         option4.setTextColor(textColorDefault);
 
-        if(questionCounter < questionCountTotal){
+        if (questionCounter < questionCountTotal) {
             currentQuestion = questionList.get(questionCounter);
 
             quiz.setText(currentQuestion.getQuestion());
@@ -93,12 +114,12 @@ public class Quiz extends AppCompatActivity {
 
     private void startCountDown() {
         progressBar.setProgress(4);
-        countDownTimer = new CountDownTimer(timeLeftInMillis,1000) {
+        countDownTimer = new CountDownTimer(timeLeftInMillis, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
                 timeLeftInMillis = millisUntilFinished;
                 updateCountDownText();
-                int progress = (int)(millisUntilFinished/50);
+                int progress = (int) (millisUntilFinished / 50);
                 progressBar.setProgress(progress);
             }
 
@@ -110,73 +131,72 @@ public class Quiz extends AppCompatActivity {
         }.start();
     }
 
-    private void updateCountDownText(){
+    private void updateCountDownText() {
         int seconds = (int) (timeLeftInMillis / 1000) % 60;
 
-        String  timeFormatted = String.format(Locale.getDefault(), "%02d", seconds);
+        String timeFormatted = String.format(Locale.getDefault(), "%02d", seconds);
 
         timer.setText(timeFormatted);
 
     }
 
 
+    private void checkAnswer(final int ansNmb) {
 
-    private void checkAnswer(final int ansNmb){
-
-        answered = true;
         countDownTimer.cancel();
+        answered = true;
 
-                if(ansNmb == currentQuestion.getAnsNumber()) {
+        if (ansNmb == currentQuestion.getAnsNumber()) {
 
-                    switch (currentQuestion.getAnsNumber()) {
-                        case 1:
-                            option1.setTextColor(Color.GREEN);
-                            option1.setBackgroundResource(R.drawable.rightans);
-                            Toast.makeText(Quiz.this, "Right answer", Toast.LENGTH_SHORT).show();
-                            break;
-                        case 2:
-                            option2.setTextColor(Color.GREEN);
-                            option2.setBackgroundResource(R.drawable.rightans);
-                            Toast.makeText(Quiz.this, "Right answer", Toast.LENGTH_SHORT).show();
-                            break;
-                        case 3:
-                            option3.setTextColor(Color.GREEN);
-                            option3.setBackgroundResource(R.drawable.rightans);
-                            Toast.makeText(Quiz.this, "Right answer", Toast.LENGTH_SHORT).show();
-                            break;
-                        case 4:
-                            option4.setTextColor(Color.GREEN);
-                            option4.setBackgroundResource(R.drawable.rightans);
-                            Toast.makeText(Quiz.this, "Right answer", Toast.LENGTH_SHORT).show();
-                            break;
-                    }
-                    showNext();
-                }else {
-                    Toast.makeText(Quiz.this, "wrong answer", Toast.LENGTH_SHORT).show();
-                    showNext();
-                }
-
+            switch (currentQuestion.getAnsNumber()) {
+                case 1:
+                    option1.setTextColor(Color.GREEN);
+                    option1.setBackgroundResource(R.drawable.rightans);
+                    Toast.makeText(Quiz.this, "Right answer", Toast.LENGTH_SHORT).show();
+                    break;
+                case 2:
+                    option2.setTextColor(Color.GREEN);
+                    option2.setBackgroundResource(R.drawable.rightans);
+                    Toast.makeText(Quiz.this, "Right answer", Toast.LENGTH_SHORT).show();
+                    break;
+                case 3:
+                    option3.setTextColor(Color.GREEN);
+                    option3.setBackgroundResource(R.drawable.rightans);
+                    Toast.makeText(Quiz.this, "Right answer", Toast.LENGTH_SHORT).show();
+                    break;
+                case 4:
+                    option4.setTextColor(Color.GREEN);
+                    option4.setBackgroundResource(R.drawable.rightans);
+                    Toast.makeText(Quiz.this, "Right answer", Toast.LENGTH_SHORT).show();
+                    break;
+            }
+            showNext();
+        } else {
+            Toast.makeText(Quiz.this, "wrong answer", Toast.LENGTH_SHORT).show();
+            showNext();
+        }
 
 
     }
 
 
-    private void showNext(){
+    private void showNext() {
 
         Runnable r = new Runnable() {
             @Override
             public void run() {
 
-        if(questionCounter < questionCountTotal) {
+                if (questionCounter < questionCountTotal) {
 
-            clickable();
-            optionbackground();
-            showNextQuestion();
-        } else {
-            Intent intent = new Intent(Quiz.this,Finish.class);
-            startActivity(intent);
-        }
-    }
+                    clickable();
+                    optionbackground();
+                    showNextQuestion();
+                } else {
+                    Intent intent = new Intent(Quiz.this, Finish.class);
+                    startActivity(intent);
+                    finish();
+                }
+            }
 
         };
         Handler h = new Handler();
@@ -184,7 +204,7 @@ public class Quiz extends AppCompatActivity {
 
     }
 
-    private void finishQuiz(){
+    private void finishQuiz() {
 
         finish();
     }
@@ -193,7 +213,8 @@ public class Quiz extends AppCompatActivity {
     public void onClick(View v) {
 
         int ansNmb;
-        switch (v.getId()){
+        switch (v.getId()) {
+
             case R.id.number:
                 ansNmb = 1;
                 option1.setTextColor(Color.RED);
@@ -232,24 +253,27 @@ public class Quiz extends AppCompatActivity {
             countDownTimer.cancel();
         }
     }
-    private void clickable(){
+
+    private void clickable() {
         option1.setClickable(true);
         option2.setClickable(true);
         option3.setClickable(true);
         option4.setClickable(true);
     }
 
-    private void clickunable(){
+    private void clickunable() {
         option1.setClickable(false);
         option2.setClickable(false);
         option3.setClickable(false);
         option4.setClickable(false);
     }
 
-    private void optionbackground(){
+    private void optionbackground() {
         option1.setBackgroundResource(R.drawable.optionbtnstyle);
         option2.setBackgroundResource(R.drawable.optionbtnstyle);
         option3.setBackgroundResource(R.drawable.optionbtnstyle);
         option4.setBackgroundResource(R.drawable.optionbtnstyle);
     }
+
+
 }

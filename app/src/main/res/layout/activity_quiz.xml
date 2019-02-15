@@ -21,7 +21,8 @@
         android:text="Variable Game"
         android:textColor="@color/white"
         android:textSize="25sp"
-        android:layout_marginTop="10dp"/>
+        android:layout_marginTop="10dp"
+        android:freezesText="true"/>
 
     <ProgressBar
         android:id="@+id/progressBar"
@@ -32,7 +33,8 @@
         android:progress="100"
         android:background="@drawable/barcircle"
         android:layout_below="@id/textView4"
-        android:layout_marginLeft="150dp"/>
+        android:layout_marginLeft="150dp"
+        android:freezesText="true"/>
 
     <TextView
         android:id="@+id/timer"
@@ -42,7 +44,8 @@
         android:textSize="25sp"
         android:layout_below="@id/textView4"
         android:layout_marginTop="20dp"
-        android:layout_marginLeft="170dp"/>
+        android:layout_marginLeft="170dp"
+        android:freezesText="true"/>
 
     <LinearLayout
         android:id="@+id/linearLayout"
@@ -59,8 +62,10 @@
             android:layout_marginTop="15dp"
             android:layout_height="120dp"
             android:gravity="center"
+            android:text="Click the right button in 3sec"
             android:textSize="25sp"
-            android:background="@color/white" />
+            android:background="@color/white"
+            android:freezesText="true" />
     </LinearLayout>
 
 </RelativeLayout>
@@ -94,7 +99,8 @@
             android:clickable="true"
             android:textColor="@color/white"
             android:textSize="25sp"
-            android:layout_marginLeft="10dp"/>
+            android:layout_marginLeft="10dp"
+            android:freezesText="true"/>
 
         <TextView
             android:id="@+id/string"
@@ -107,7 +113,8 @@
             android:onClick="onClick"
             android:clickable="true"
             android:textColor="@color/white"
-            android:textSize="25sp" />
+            android:textSize="25sp"
+            android:freezesText="true"/>
     </LinearLayout>
 
     <LinearLayout
@@ -133,7 +140,8 @@
             android:clickable="true"
             android:textColor="@color/white"
             android:textSize="25sp"
-            android:layout_marginLeft="10dp"/>
+            android:layout_marginLeft="10dp"
+            android:freezesText="true"/>
 
         <TextView
             android:id="@+id/incorrect"
@@ -146,7 +154,8 @@
             android:onClick="onClick"
             android:clickable="true"
             android:textColor="@color/white"
-            android:textSize="25sp" />
+            android:textSize="25sp"
+            android:freezesText="true" />
 
     </LinearLayout>
 
